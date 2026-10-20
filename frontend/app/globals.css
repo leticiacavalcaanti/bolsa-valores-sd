@@ -1,0 +1,59 @@
+:root {
+  --bg: #0f1419;
+  --panel: #1a2029;
+  --border: #2a323d;
+  --text: #e6e9ee;
+  --muted: #8b95a5;
+  --up: #2ecc71;
+  --down: #ff5d5d;
+  --accent: #4c8dff;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; font-size: 14px; }
+
+.layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; padding: 16px; max-width: 1200px; margin: 0 auto; }
+.layout > header, .wide { grid-column: 1 / -1; }
+header { display: flex; align-items: center; gap: 12px; }
+.spacer { flex: 1; }
+
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.card h2 { margin: 0 0 12px; font-size: 15px; }
+
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; color: var(--muted); font-weight: 500; }
+th, td { padding: 6px 8px; border-bottom: 1px solid var(--border); }
+tr.clickable { cursor: pointer; }
+tr.clickable:hover, tr.selected { background: #232c38; }
+
+.up { color: var(--up); }
+.down { color: var(--down); }
+.muted { color: var(--muted); }
+.error { color: var(--down); }
+
+.pill { padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+.pill.ok { background: #153a27; color: var(--up); }
+.pill.bad { background: #432020; color: var(--down); }
+
+.stats { display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 12px; }
+.stats div { display: flex; flex-direction: column; gap: 4px; }
+.stats strong { font-size: 18px; }
+
+.two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+input { width: 100%; padding: 8px 10px; margin-bottom: 8px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 6px; }
+button { padding: 8px 12px; background: var(--accent); color: #fff; border: 0; border-radius: 6px; cursor: pointer; }
+button:disabled { opacity: 0.6; cursor: wait; }
+button.link { background: none; color: var(--accent); padding: 0; }
+
+.toggle { display: flex; gap: 8px; margin-bottom: 8px; }
+.toggle button { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--muted); }
+.toggle button.active.buy { background: #153a27; color: var(--up); border-color: var(--up); }
+.toggle button.active.sell { background: #432020; color: var(--down); border-color: var(--down); }
+
+.feed { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow: auto; }
+.feed li { padding: 4px 0; border-bottom: 1px solid var(--border); }
+
+.login { min-height: 100vh; display: grid; place-items: center; }
+.login .card { width: 340px; display: flex; flex-direction: column; gap: 4px; }
+.login h1 { margin: 0; }
