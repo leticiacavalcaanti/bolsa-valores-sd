@@ -1,19 +1,19 @@
+import { price, signedPct, tone } from "../lib/format";
+
 export default function AssetTable({ assets, selected, onSelect }) {
+  if (assets.length === 0) return <p className="empty">Carregando cotações...</p>;
   return (
-    <table>
-      <thead>
-        <tr><th>Ativo</th><th>Preço</th><th>Var.</th><th>Volume</th></tr>
-      </thead>
-      <tbody>
-        {assets.map((a) => (
-          <tr key={a.symbol} className={a.symbol === selected ? "selected" : "clickable"} onClick={() => onSelect(a.symbol)}>
-            <td title={a.name}>{a.symbol}</td>
-            <td>{Number(a.last_price).toFixed(2)}</td>
-            <td className={a.change_pct >= 0 ? "up" : "down"}>{Number(a.change_pct).toFixed(2)}%</td>
-            <td>{a.volume}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <ul className="assets">
+      {assets.map((a) => (
+        <li key={a.symbol}>
+          <button type="button" className="asset" aria-pressed={a.symbol === selected} onClick={() => onSelect(a.symbol)}>
+            <span className="sym">{a.symbol}</span>
+            <span className="num px">{price(a.last_price)}</span>
+            <span className="name" title={a.name}>{a.name}</span>
+            <span className={`num chg ${tone(a.change_pct)}`}>{signedPct(a.change_pct)}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
   );
 }
