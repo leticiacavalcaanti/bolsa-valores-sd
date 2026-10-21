@@ -44,11 +44,8 @@ export default function LoginForm({ onSignIn }) {
       <section className="login-intro">
         <div className="brand"><Mark size={22} />Home Broker</div>
         <div>
-          <h1>Negocie no pregão simulado</h1>
-          <p className="lead">
-            Envie ordens limitadas, acompanhe o livro de ofertas mudar a cada negócio e veja sua carteira
-            reagir em tempo real, ao lado de outros investidores e dos robôs do mercado.
-          </p>
+          <h1>Pregão simulado</h1>
+          <p className="lead">Ordens limitadas, livro de ofertas e carteira.</p>
         </div>
         <div className="board">
           <p className="board-title">Papéis negociados neste pregão</p>
