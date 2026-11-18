@@ -120,5 +120,16 @@ distribuído e *erasure coding* para reduzir o custo de N× de espaço (como Min
 
 ## 9. Divisão de tarefas
 
-Preencher com os integrantes e seus commits (a atividade exige commits de todos): ex. controlador/metadados, nós e integridade, cliente/CLI/
-criptografia, testes e relatório.
+Dupla: Letícia Cavalcanti e Rodrigo Oliveira.
+
+**Letícia Cavalcanti** (usuário Git `leticiacavalcaanti`): projeto e implementação do DFS (controlador e metadados, nós de armazenamento com
+verificação de hash e scrubbing, cliente CLI com criptografia opcional, `docker-compose.yml`), documentação (README e este relatório) e
+testes funcionais, de falha e de desempenho, com os dados brutos e o relatório de testes.
+
+| Commit | Descrição |
+|---|---|
+| `44a4c71` | Adiciona DFS: controlador, nós de armazenamento e cliente CLI |
+| `7c55007` | Documenta arquitetura, protocolos e decisões do DFS |
+| `910355f` | Adiciona testes funcionais, de falha e de desempenho do DFS com dados brutos |
+
+**Rodrigo Oliveira:** *preencher com a parte dele e os commits dele (a atividade exige commits de todos os integrantes).*
