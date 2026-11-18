@@ -1,0 +1,27 @@
+[
+ {
+  "teste": "F09 corrupção na leitura",
+  "hora_injecao": 1795022161.4730852,
+  "detectada_por": "cliente (hash na leitura)",
+  "reposicao_s": 3.507760763168335,
+  "bloco": "49c50d14545b-0",
+  "no_corrompido": "node3"
+ },
+ {
+  "teste": "F10 corrupção no scrubbing",
+  "hora_injecao": 1795022164.9971797,
+  "detectada_em_s": 1.84,
+  "reposicao_s": 0.5422625541687012,
+  "bloco": "49c50d14545b-1",
+  "no_corrompido": "node3"
+ },
+ {
+  "teste": "T01 queda de 1 nó",
+  "no": "node3",
+  "hora_falha": 1795022167.3809102,
+  "detectado_morto_em_s": 11.4,
+  "n_restaurado_em_s": 22.9,
+  "bytes_copiados": 82861560,
+  "min_replicas_vivas": 0
+ }
+]

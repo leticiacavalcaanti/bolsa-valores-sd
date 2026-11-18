@@ -1,0 +1,63 @@
++ export MSYS_NO_PATHCONV=1 PYTHONIOENCODING=utf-8
++ MSYS_NO_PATHCONV=1
++ PYTHONIOENCODING=utf-8
+++ dirname tests/run_all.sh
++ cd tests/..
++ D='docker compose run --rm -T --entrypoint python client /tests/perf.py'
++ docker compose run --rm -T --entrypoint python client /tests/perf.py e2
+ Container dfs-controller-1  Running
+E2_clientes 1 rep 0 {'ops_s': 25.94, 'mb_s': 25.94, 'p50': 36.25, 'p95': 70.04, 'mean': 38.54}
+E2_clientes 1 rep 1 {'ops_s': 29.32, 'mb_s': 29.32, 'p50': 31.27, 'p95': 68.69, 'mean': 34.1}
+E2_clientes 1 rep 2 {'ops_s': 26.95, 'mb_s': 26.95, 'p50': 34.16, 'p95': 71.32, 'mean': 37.09}
+E2_clientes 1 rep 3 {'ops_s': 33.06, 'mb_s': 33.06, 'p50': 30.02, 'p95': 52.1, 'mean': 30.24}
+OK /perf/e2_2_0/c1_2.bin -> /tmp/perf/out_e2_2_0_1.bin: 1048576 bytes, sha256 verificado
++ docker compose run --rm -T --entrypoint python client /tests/perf.py e3
+ Container dfs-controller-1  Running
+E3_tamanho ('10KB', 10240) rep 0 {'ops_s': 70.21, 'mb_s': 0.69, 'p50': 52.73, 'p95': 119.11, 'mean': 56.8}
+OK /perf/e3_10KB_1/c1_2.bin: 10240 bytes, 1 bloco(s), estado=íntegro, 0.06s (0.2 MB/s)OK /perf/e3_10KB_1/c3_2.bin -> /tmp/perf/out_e3_10KB_1_3.bin: 10240 bytes, sha256 verificado
+
++ python tests/recovery.py e9
+{'no': 'node3', 'hora_falha': 1795021238.8816078, 'hora_detectado': 1795021248.0026202, 'hora_recuperado': 1795021251.347065, 'hora_no_volta': 1795021288.8830726}
++ python tests/recovery.py e7
+{'volume_mb': 50, 'no': 'node2', 'blocos_no_no': 24, 'hora_falha': 1795021339.6015663, 'detectado_s': 10.38151216506958, 'recuperado_s': 15.827125310897827, 'bytes_copiados': 46149372, 'vazao_rereplicacao_mb_s': 8.082004655140416, 'tag': 'banda_livre'}
+{'volume_mb': 50, 'no': 'node2', 'blocos_no_no': 23, 'hora_falha': 1795021375.7072563, 'detectado_s': 11.998301029205322, 'recuperado_s': 16.870238304138184, 'bytes_copiados': 46149372, 'vazao_rereplicacao_mb_s': 9.033669423686133, 'tag': 'banda_livre'}
+{'volume_mb': 50, 'no': 'node1', 'blocos_no_no': 23, 'hora_falha': 1795021408.8250504, 'detectado_s': 9.845589876174927, 'recuperado_s': 15.84662389755249, 'bytes_copiados': 46149372, 'vazao_rereplicacao_mb_s': 7.333981216886137, 'tag': 'banda_livre'}
+{'volume_mb': 100, 'no': 'node3', 'blocos_no_no': 30, 'hora_falha': 1795021455.756699, 'detectado_s': 9.825550556182861, 'recuperado_s': 16.967607021331787, 'bytes_copiados': 72363772, 'vazao_rereplicacao_mb_s': 9.662689049216123, 'tag': 'banda_livre'}
+{'volume_mb': 100, 'no': 'node3', 'blocos_no_no': 30, 'hora_falha': 1795021506.8555956, 'detectado_s': 9.851658344268799, 'recuperado_s': 17.0179660320282, 'bytes_copiados': 72363772, 'vazao_rereplicacao_mb_s': 9.629989919712015, 'tag': 'banda_livre'}
+{'volume_mb': 100, 'no': 'node3', 'blocos_no_no': 30, 'hora_falha': 1795021567.330067, 'detectado_s': 9.852293491363525, 'recuperado_s': 17.495418548583984, 'bytes_copiados': 72363772, 'vazao_rereplicacao_mb_s': 9.029221722531233, 'tag': 'banda_livre'}
+{'volume_mb': 200, 'no': 'node3', 'blocos_no_no': 44, 'hora_falha': 1795021646.0926764, 'detectado_s': 11.418334007263184, 'recuperado_s': 22.625938892364502, 'bytes_copiados': 124792572, 'vazao_rereplicacao_mb_s': 10.6188139227574, 'tag': 'banda_livre'}
+{'volume_mb': 200, 'no': 'node3', 'blocos_no_no': 44, 'hora_falha': 1795021739.243413, 'detectado_s': 9.917393922805786, 'recuperado_s': 22.02648138999939, 'bytes_copiados': 124792572, 'vazao_rereplicacao_mb_s': 9.828277408773213, 'tag': 'banda_livre'}
+{'volume_mb': 200, 'no': 'node3', 'blocos_no_no': 45, 'hora_falha': 1795021832.305749, 'detectado_s': 11.435439109802246, 'recuperado_s': 23.03302025794983, 'bytes_copiados': 124792572, 'vazao_rereplicacao_mb_s': 10.261749348801649, 'tag': 'banda_livre'}
+{'volume_mb': 100, 'no': 'node3', 'blocos_no_no': 30, 'hora_falha': 1795021906.5040128, 'detectado_s': 11.396077871322632, 'recuperado_s': 20.005396127700806, 'bytes_copiados': 72363772, 'vazao_rereplicacao_mb_s': 8.015904249276753, 'tag': 'limite_8MBps'}
+{'volume_mb': 100, 'no': 'node3', 'blocos_no_no': 30, 'hora_falha': 1795021961.0193977, 'detectado_s': 11.37318468093872, 'recuperado_s': 18.96109652519226, 'bytes_copiados': 72363772, 'vazao_rereplicacao_mb_s': 9.094922583601356, 'tag': 'limite_8MBps'}
+{'volume_mb': 100, 'no': 'node4', 'blocos_no_no': 31, 'hora_falha': 1795022014.5522974, 'detectado_s': 11.912722110748291, 'recuperado_s': 19.94775629043579, 'bytes_copiados': 72363772, 'vazao_rereplicacao_mb_s': 8.588821061786913, 'tag': 'limite_8MBps'}
++ python tests/recovery.py e8
+{'hora_entrada': 1795022063.8451822, 'descoberto_em_s': 1.6032414436340332, 'primeiro_bloco_em_s': 1.61934494972229}
++ python tests/functional.py
+[OK] F01 Criar, listar e remover diretório (vazio vs não vazio) -> {'mkdir': True, 'ls_tem_sub': True, 'rmdir_nao_vazio_rejeitado': True, 'rmdir_vazio_ok': True}
+[OK] F02 put + get de 10 MB devolve arquivo idêntico ->  Container dfs-controller-1  Running | sha256 igual ao original: True
+[OK] F03 Réplicas nunca no mesmo disco/máquina -> 3 blocos x 3 réplicas em nós e máquinas distintos; violações: []
+[OK] F04 Consulta de metadados (tamanho, data, hash, réplicas, estado) -> ['  tamanho: 10485760 bytes', '  data: 2026-11-18 17:15:27', '  sha256: 8db4b46e4101e6f6b7e72ef2f6fbb60c90da96a5f1be87dcc02f7119cacb6ab8']
+[OK] F05 Renomear/mover e remover arquivo -> mv=True novo existe=True antigo sumiu=True rm=True
+[OK] F06 Menos nós que N: aceita como sub-replicada e informa claramente -> ['AVISO: bloco 0: só 6 de 7 nós: gravação ficará SUB-REPLICADA', 'AVISO: bloco 1: só 6 de 7 nós: gravação ficará SUB-REPLICADA', 'AVISO: bloco 2: só 6 de 7 nós: gravação ficará SUB-REPLICADA', 'OK /t1795022112/sub.bin: 10485760 bytes, 3 bloco(s), estado=sub-replicado, 0.42s (23.7 MB/s)']
+[OK] F07 Duas escritas simultâneas no mesmo arquivo: leitura nunca vê arquivo parcial/misto -> resultado é exatamente uma das duas versões (last-writer-wins), nunca mistura: True
+[OK] F08 Criptografia ligada: nós só guardam dados cifrados; leitura devolve o original -> round-trip ok=True; texto claro encontrado nos discos dos nós=False
+[OK] F09 Réplica corrompida: leitura detecta, usa outra réplica e o sistema substitui a cópia ruim -> detectada=True; arquivo íntegro=True; N=3 restaurado em 3.5s
+[OK] F10 Scrubbing em segundo plano encontra réplica corrompida e a substitui -> scrubbing detectou em 1.8s; réplica descartada e N=3 restaurado em 0.5s
+[OK] T01 Queda de um nó: detecta (heartbeat), re-replica automaticamente e mantém leituras íntegras -> node3: morto em 11.4s, N=3 restaurado ~22.9s após a falha; leitura íntegra=True
+[OK] T02 Nó que volta é reconhecido e seus blocos reconciliados -> node3 voltou em 1.6s; reconciliação: 28 blocos aproveitados, 0 descartados
+[OK] T03 Falha simultânea de N-1 nós: zero perda de dados -> com ['node1', 'node2'] fora (N-1=2 falhas) a leitura devolveu hash correto=True; N restaurado=True
+[OK] T04 Reinício do controlador: metadados persistem e nós se re-registram sozinhos -> metadados recarregados do SQLite; nós se re-registraram em 3.1s; arquivo íntegro
+[OK] T05 Drain: esvazia um nó de forma planejada antes de retirá-lo -> drain de node6 (49 blocos): 49 cópias feitas; arquivo com 3 réplicas fora dele em 16.0s
+[OK] T06 Nó novo é descoberto automaticamente e passa a receber dados -> node6 descoberto em 1.6s (contado após o `up`) sem reiniciar nada; recebeu 12 réplica(s) nas 4 gravações seguintes
+16/16 passaram
++ python tests/plots.py
+gerado E2_clientes.png
+gerado E3_tamanho.png
+gerado E5_replicacao.png
+gerado E6_cripto.png
+gerado E7_recuperacao.png
+gerado E9_falha.png
+gerado E8_no_novo.png
++ python tests/report.py
+gerado C:\Users\letic\bolsa-sd\dfs\docs\relatorio-testes.md

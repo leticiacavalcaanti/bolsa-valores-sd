@@ -1,0 +1,130 @@
+[
+ {
+  "id": "F01",
+  "objetivo": "Criar, listar e remover diretório (vazio vs não vazio)",
+  "esperado": "rejeita remover não vazio",
+  "obtido": "{'mkdir': True, 'ls_tem_sub': True, 'rmdir_nao_vazio_rejeitado': True, 'rmdir_vazio_ok': True}",
+  "status": "passou",
+  "hora": "2026-11-18 14:15:24"
+ },
+ {
+  "id": "F02",
+  "objetivo": "put + get de 10 MB devolve arquivo idêntico",
+  "esperado": "sha256 igual",
+  "obtido": " Container dfs-controller-1  Running | sha256 igual ao original: True",
+  "status": "passou",
+  "hora": "2026-11-18 14:15:31"
+ },
+ {
+  "id": "F03",
+  "objetivo": "Réplicas nunca no mesmo disco/máquina",
+  "esperado": "0 violações",
+  "obtido": "3 blocos x 3 réplicas em nós e máquinas distintos; violações: []",
+  "status": "passou",
+  "hora": "2026-11-18 14:15:31"
+ },
+ {
+  "id": "F04",
+  "objetivo": "Consulta de metadados (tamanho, data, hash, réplicas, estado)",
+  "esperado": "campos presentes",
+  "obtido": "['  tamanho: 10485760 bytes', '  data: 2026-11-18 17:15:27', '  sha256: 8db4b46e4101e6f6b7e72ef2f6fbb60c90da96a5f1be87dcc02f7119cacb6ab8']",
+  "status": "passou",
+  "hora": "2026-11-18 14:15:33"
+ },
+ {
+  "id": "F05",
+  "objetivo": "Renomear/mover e remover arquivo",
+  "esperado": "ok",
+  "obtido": "mv=True novo existe=True antigo sumiu=True rm=True",
+  "status": "passou",
+  "hora": "2026-11-18 14:15:39"
+ },
+ {
+  "id": "F06",
+  "objetivo": "Menos nós que N: aceita como sub-replicada e informa claramente",
+  "esperado": "AVISO + estado sub-replicado",
+  "obtido": "['AVISO: bloco 0: só 6 de 7 nós: gravação ficará SUB-REPLICADA', 'AVISO: bloco 1: só 6 de 7 nós: gravação ficará SUB-REPLICADA', 'AVISO: bloco 2: só 6 de 7 nós: gravação ficará SUB-REPLICADA', 'OK /t1795022112/sub.bin: 10485760 bytes, 3 bloco(s), estado=sub-replicado, 0.42s (23.7 MB/s)']",
+  "status": "passou",
+  "hora": "2026-11-18 14:15:42"
+ },
+ {
+  "id": "F07",
+  "objetivo": "Duas escritas simultâneas no mesmo arquivo: leitura nunca vê arquivo parcial/misto",
+  "esperado": "hash = v1 ou v2",
+  "obtido": "resultado é exatamente uma das duas versões (last-writer-wins), nunca mistura: True",
+  "status": "passou",
+  "hora": "2026-11-18 14:15:50"
+ },
+ {
+  "id": "F08",
+  "objetivo": "Criptografia ligada: nós só guardam dados cifrados; leitura devolve o original",
+  "esperado": "sem texto claro nos nós",
+  "obtido": "round-trip ok=True; texto claro encontrado nos discos dos nós=False",
+  "status": "passou",
+  "hora": "2026-11-18 14:15:59"
+ },
+ {
+  "id": "F09",
+  "objetivo": "Réplica corrompida: leitura detecta, usa outra réplica e o sistema substitui a cópia ruim",
+  "esperado": "arquivo íntegro + N restaurado",
+  "obtido": "detectada=True; arquivo íntegro=True; N=3 restaurado em 3.5s",
+  "status": "passou",
+  "hora": "2026-11-18 14:16:04"
+ },
+ {
+  "id": "F10",
+  "objetivo": "Scrubbing em segundo plano encontra réplica corrompida e a substitui",
+  "esperado": "N restaurado",
+  "obtido": "scrubbing detectou em 1.8s; réplica descartada e N=3 restaurado em 0.5s",
+  "status": "passou",
+  "hora": "2026-11-18 14:16:07"
+ },
+ {
+  "id": "T01",
+  "objetivo": "Queda de um nó: detecta (heartbeat), re-replica automaticamente e mantém leituras íntegras",
+  "esperado": "N restaurado, hash correto",
+  "obtido": "node3: morto em 11.4s, N=3 restaurado ~22.9s após a falha; leitura íntegra=True",
+  "status": "passou",
+  "hora": "2026-11-18 14:16:33"
+ },
+ {
+  "id": "T02",
+  "objetivo": "Nó que volta é reconhecido e seus blocos reconciliados",
+  "esperado": "reconhecido, sem excesso de réplicas",
+  "obtido": "node3 voltou em 1.6s; reconciliação: 28 blocos aproveitados, 0 descartados",
+  "status": "passou",
+  "hora": "2026-11-18 14:16:40"
+ },
+ {
+  "id": "T03",
+  "objetivo": "Falha simultânea de N-1 nós: zero perda de dados",
+  "esperado": "leitura íntegra",
+  "obtido": "com ['node1', 'node2'] fora (N-1=2 falhas) a leitura devolveu hash correto=True; N restaurado=True",
+  "status": "passou",
+  "hora": "2026-11-18 14:16:53"
+ },
+ {
+  "id": "T04",
+  "objetivo": "Reinício do controlador: metadados persistem e nós se re-registram sozinhos",
+  "esperado": "estado preservado",
+  "obtido": "metadados recarregados do SQLite; nós se re-registraram em 3.1s; arquivo íntegro",
+  "status": "passou",
+  "hora": "2026-11-18 14:17:00"
+ },
+ {
+  "id": "T05",
+  "objetivo": "Drain: esvazia um nó de forma planejada antes de retirá-lo",
+  "esperado": "3 réplicas fora do nó drenado",
+  "obtido": "drain de node6 (49 blocos): 49 cópias feitas; arquivo com 3 réplicas fora dele em 16.0s",
+  "status": "passou",
+  "hora": "2026-11-18 14:17:21"
+ },
+ {
+  "id": "T06",
+  "objetivo": "Nó novo é descoberto automaticamente e passa a receber dados",
+  "esperado": "registrado sem reiniciar o sistema",
+  "obtido": "node6 descoberto em 1.6s (contado após o `up`) sem reiniciar nada; recebeu 12 réplica(s) nas 4 gravações seguintes",
+  "status": "passou",
+  "hora": "2026-11-18 14:17:39"
+ }
+]

@@ -1,0 +1,36 @@
+ Container dfs-controller-1  Running
+E5_replicacao 1 rep 0 {'write_ms': 212.33, 'write_mb_s': 47.1, 'read_ms': 175.64, 'read_mb_s': 56.93, 'overhead_x': 1.0}
+E5_replicacao 1 rep 1 {'write_ms': 247.18, 'write_mb_s': 40.46, 'read_ms': 178.94, 'read_mb_s': 55.88, 'overhead_x': 1.0}
+E5_replicacao 1 rep 2 {'write_ms': 162.58, 'write_mb_s': 61.51, 'read_ms': 119.39, 'read_mb_s': 83.76, 'overhead_x': 1.0}
+E5_replicacao 1 rep 3 {'write_ms': 461.3, 'write_mb_s': 21.68, 'read_ms': 140.42, 'read_mb_s': 71.21, 'overhead_x': 1.0}
+E5_replicacao 2 rep 0 {'write_ms': 267.58, 'write_mb_s': 37.37, 'read_ms': 139.85, 'read_mb_s': 71.5, 'overhead_x': 2.0}
+E5_replicacao 2 rep 1 {'write_ms': 1253.53, 'write_mb_s': 7.98, 'read_ms': 197.32, 'read_mb_s': 50.68, 'overhead_x': 2.0}
+E5_replicacao 2 rep 2 {'write_ms': 260.35, 'write_mb_s': 38.41, 'read_ms': 158.15, 'read_mb_s': 63.23, 'overhead_x': 2.0}
+E5_replicacao 2 rep 3 {'write_ms': 209.55, 'write_mb_s': 47.72, 'read_ms': 110.04, 'read_mb_s': 90.88, 'overhead_x': 2.0}
+E5_replicacao 3 rep 0 {'write_ms': 225.18, 'write_mb_s': 44.41, 'read_ms': 146.14, 'read_mb_s': 68.43, 'overhead_x': 3.0}
+E5_replicacao 3 rep 1 {'write_ms': 198.32, 'write_mb_s': 50.42, 'read_ms': 127.64, 'read_mb_s': 78.35, 'overhead_x': 3.0}
+E5_replicacao 3 rep 2 {'write_ms': 350.96, 'write_mb_s': 28.49, 'read_ms': 118.44, 'read_mb_s': 84.43, 'overhead_x': 3.0}
+E5_replicacao 3 rep 3 {'write_ms': 152.38, 'write_mb_s': 65.62, 'read_ms': 109.85, 'read_mb_s': 91.03, 'overhead_x': 3.0}
+E5_replicacao 4 rep 0 {'write_ms': 183.72, 'write_mb_s': 54.43, 'read_ms': 113.58, 'read_mb_s': 88.04, 'overhead_x': 4.0}
+E5_replicacao 4 rep 1 {'write_ms': 281.02, 'write_mb_s': 35.58, 'read_ms': 169.46, 'read_mb_s': 59.01, 'overhead_x': 4.0}
+E5_replicacao 4 rep 2 {'write_ms': 289.57, 'write_mb_s': 34.53, 'read_ms': 204.46, 'read_mb_s': 48.91, 'overhead_x': 4.0}
+E5_replicacao 4 rep 3 {'write_ms': 293.81, 'write_mb_s': 34.04, 'read_ms': 190.55, 'read_mb_s': 52.48, 'overhead_x': 4.0}
+ Container dfs-controller-1  Running
+E6_cripto desligada rep 0 {'write_mb_s': 42.9, 'read_mb_s': 55.12, 'cpu_s_per_mb': 0.02}
+E6_cripto desligada rep 1 {'write_mb_s': 42.08, 'read_mb_s': 71.85, 'cpu_s_per_mb': 0.01}
+E6_cripto desligada rep 2 {'write_mb_s': 55.59, 'read_mb_s': 63.34, 'cpu_s_per_mb': 0.01}
+E6_cripto desligada rep 3 {'write_mb_s': 50.72, 'read_mb_s': 73.72, 'cpu_s_per_mb': 0.01}
+E6_cripto ligada rep 0 {'write_mb_s': 43.29, 'read_mb_s': 77.81, 'cpu_s_per_mb': 0.01}
+E6_cripto ligada rep 1 {'write_mb_s': 35.32, 'read_mb_s': 33.99, 'cpu_s_per_mb': 0.02}
+E6_cripto ligada rep 2 {'write_mb_s': 49.55, 'read_mb_s': 45.01, 'cpu_s_per_mb': 0.01}
+E6_cripto ligada rep 3 {'write_mb_s': 42.66, 'read_mb_s': 66.19, 'cpu_s_per_mb': 0.01}
+ Container dfs-controller-1  Running
+E2_clientes 1 rep 0 {'ops_s': 25.58, 'mb_s': 25.58, 'p50': 36.21, 'p95': 71.17, 'mean': 39.08}
+E2_clientes 1 rep 1 {'ops_s': 28.49, 'mb_s': 28.49, 'p50': 33.03, 'p95': 62.26, 'mean': 35.09}
+E2_clientes 1 rep 2 {'ops_s': 28.46, 'mb_s': 28.46, 'p50': 33.7, 'p95': 67.22, 'mean': 35.12}
+E2_clientes 1 rep 3 {'ops_s': 27.82, 'mb_s': 27.82, 'p50': 33.12, 'p95': 75.1, 'mean': 35.93}
+E2_clientes 2 rep 0 {'ops_s': 38.11, 'mb_s': 38.11, 'p50': 48.25, 'p95': 101.23, 'mean': 52.39}
+E2_clientes 2 rep 1 {'ops_s': 37.51, 'mb_s': 37.51, 'p50': 47.54, 'p95': 103.6, 'mean': 53.25}
+OK /perf/e2_2_2/c1_2.bin -> /tmp/perf/out_e2_2_2_1.bin: 1048576 bytes, sha256 verificado
+ Container dfs-controller-1  Running
+OK /perf/e3_10KB_0/c2_0.bin -> /tmp/perf/out_e3_10KB_0_2.bin: 10240 bytes, sha256 verificado

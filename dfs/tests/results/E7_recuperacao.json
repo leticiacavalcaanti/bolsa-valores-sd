@@ -1,0 +1,134 @@
+[
+ {
+  "volume_mb": 50,
+  "no": "node2",
+  "blocos_no_no": 24,
+  "hora_falha": 1795021339.6015663,
+  "detectado_s": 10.38151216506958,
+  "recuperado_s": 15.827125310897827,
+  "bytes_copiados": 46149372,
+  "vazao_rereplicacao_mb_s": 8.082004655140416,
+  "tag": "banda_livre"
+ },
+ {
+  "volume_mb": 50,
+  "no": "node2",
+  "blocos_no_no": 23,
+  "hora_falha": 1795021375.7072563,
+  "detectado_s": 11.998301029205322,
+  "recuperado_s": 16.870238304138184,
+  "bytes_copiados": 46149372,
+  "vazao_rereplicacao_mb_s": 9.033669423686133,
+  "tag": "banda_livre"
+ },
+ {
+  "volume_mb": 50,
+  "no": "node1",
+  "blocos_no_no": 23,
+  "hora_falha": 1795021408.8250504,
+  "detectado_s": 9.845589876174927,
+  "recuperado_s": 15.84662389755249,
+  "bytes_copiados": 46149372,
+  "vazao_rereplicacao_mb_s": 7.333981216886137,
+  "tag": "banda_livre"
+ },
+ {
+  "volume_mb": 100,
+  "no": "node3",
+  "blocos_no_no": 30,
+  "hora_falha": 1795021455.756699,
+  "detectado_s": 9.825550556182861,
+  "recuperado_s": 16.967607021331787,
+  "bytes_copiados": 72363772,
+  "vazao_rereplicacao_mb_s": 9.662689049216123,
+  "tag": "banda_livre"
+ },
+ {
+  "volume_mb": 100,
+  "no": "node3",
+  "blocos_no_no": 30,
+  "hora_falha": 1795021506.8555956,
+  "detectado_s": 9.851658344268799,
+  "recuperado_s": 17.0179660320282,
+  "bytes_copiados": 72363772,
+  "vazao_rereplicacao_mb_s": 9.629989919712015,
+  "tag": "banda_livre"
+ },
+ {
+  "volume_mb": 100,
+  "no": "node3",
+  "blocos_no_no": 30,
+  "hora_falha": 1795021567.330067,
+  "detectado_s": 9.852293491363525,
+  "recuperado_s": 17.495418548583984,
+  "bytes_copiados": 72363772,
+  "vazao_rereplicacao_mb_s": 9.029221722531233,
+  "tag": "banda_livre"
+ },
+ {
+  "volume_mb": 200,
+  "no": "node3",
+  "blocos_no_no": 44,
+  "hora_falha": 1795021646.0926764,
+  "detectado_s": 11.418334007263184,
+  "recuperado_s": 22.625938892364502,
+  "bytes_copiados": 124792572,
+  "vazao_rereplicacao_mb_s": 10.6188139227574,
+  "tag": "banda_livre"
+ },
+ {
+  "volume_mb": 200,
+  "no": "node3",
+  "blocos_no_no": 44,
+  "hora_falha": 1795021739.243413,
+  "detectado_s": 9.917393922805786,
+  "recuperado_s": 22.02648138999939,
+  "bytes_copiados": 124792572,
+  "vazao_rereplicacao_mb_s": 9.828277408773213,
+  "tag": "banda_livre"
+ },
+ {
+  "volume_mb": 200,
+  "no": "node3",
+  "blocos_no_no": 45,
+  "hora_falha": 1795021832.305749,
+  "detectado_s": 11.435439109802246,
+  "recuperado_s": 23.03302025794983,
+  "bytes_copiados": 124792572,
+  "vazao_rereplicacao_mb_s": 10.261749348801649,
+  "tag": "banda_livre"
+ },
+ {
+  "volume_mb": 100,
+  "no": "node3",
+  "blocos_no_no": 30,
+  "hora_falha": 1795021906.5040128,
+  "detectado_s": 11.396077871322632,
+  "recuperado_s": 20.005396127700806,
+  "bytes_copiados": 72363772,
+  "vazao_rereplicacao_mb_s": 8.015904249276753,
+  "tag": "limite_8MBps"
+ },
+ {
+  "volume_mb": 100,
+  "no": "node3",
+  "blocos_no_no": 30,
+  "hora_falha": 1795021961.0193977,
+  "detectado_s": 11.37318468093872,
+  "recuperado_s": 18.96109652519226,
+  "bytes_copiados": 72363772,
+  "vazao_rereplicacao_mb_s": 9.094922583601356,
+  "tag": "limite_8MBps"
+ },
+ {
+  "volume_mb": 100,
+  "no": "node4",
+  "blocos_no_no": 31,
+  "hora_falha": 1795022014.5522974,
+  "detectado_s": 11.912722110748291,
+  "recuperado_s": 19.94775629043579,
+  "bytes_copiados": 72363772,
+  "vazao_rereplicacao_mb_s": 8.588821061786913,
+  "tag": "limite_8MBps"
+ }
+]
