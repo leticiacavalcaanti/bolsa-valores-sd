@@ -6,7 +6,8 @@
 - Software: Docker version 28.3.2, build 578ccf6; Python 3.12; FastAPI; PostgreSQL (imagem do compose); Next.js.
 - Topologia: 1 `market-service`, 1 `auth-service`, 1 `npc-service` (14 agentes), 1 PostgreSQL, 1 frontend, todos em contêineres.
 - **Todos os serviços, o banco e o gerador de carga rodam na MESMA máquina física** (Docker Desktop, 5,8 GiB de RAM para o Docker). Os resultados de desempenho medem a máquina inteira e **não** isolam cada componente.
-- *Preencher:* CPU, RAM total, tipo de disco da máquina. Rede: tráfego em `localhost`/rede virtual do Docker (latência desprezível).
+- Hardware: notebook, CPU Intel(R) Core(TM) i5-10210U (4 núcleos, 8 threads), 20 GB de RAM, SSD NVMe; Docker Desktop com 5,8 GiB de RAM e 4 CPUs. Todos os contêineres rodam nesta única máquina.
+- Rede: tráfego em `localhost` e na rede virtual do Docker (latência de rede não medida; desprezível frente às latências observadas).
 
 ## 2. Testes funcionais
 

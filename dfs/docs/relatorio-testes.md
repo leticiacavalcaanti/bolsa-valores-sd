@@ -6,7 +6,8 @@
 - Software: Docker version 28.3.2, build 578ccf6; Python 3.12 (imagem `python:3.12-slim`); FastAPI/uvicorn; SQLite; `cryptography` (AES-GCM).
 - Topologia: **1 controlador (+ metadados) e 5 nós de armazenamento** (6º nó para os testes de entrada de nós), cada nó com seu volume Docker; disco simulado de 500 MB por nó (`NODE_CAPACITY_MB`). Cliente e gerador de carga rodam em contêiner na mesma rede.
 - **Todos os contêineres compartilham uma única máquina física** (Docker Desktop, 5,8 GiB de RAM para o Docker): CPU, memória e disco são disputados entre controlador, nós e clientes, e a rede é a rede virtual do Docker (latência desprezível, sem limite de banda real). Isso favorece a vazão absoluta e **não representa uma rede real**; só as comparações relativas entre configurações são confiáveis.
-- *Preencher:* CPU (modelo/núcleos), RAM total, tipo de disco, `iperf3`/`ping` entre contêineres.
+- Hardware: notebook, CPU Intel(R) Core(TM) i5-10210U (4 núcleos, 8 threads), 20 GB de RAM, SSD NVMe; Docker Desktop com 5,8 GiB de RAM e 4 CPUs. Todos os contêineres rodam nesta única máquina.
+- Rede: tráfego na rede virtual do Docker, dentro da mesma máquina; `iperf3` e `ping` entre contêineres **não foram medidos**.
 - Repetições: 4 por configuração (a 1ª, de aquecimento, é descartada ⇒ 3 válidas); média ± intervalo de confiança de 95% (t de Student).
 
 ## 2. Testes funcionais e de integridade
