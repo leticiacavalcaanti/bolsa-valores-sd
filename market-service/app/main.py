@@ -11,7 +11,11 @@ from pydantic import BaseModel, Field
 
 from . import engine
 from .auth import User, current_user, user_from_token
-from .observability import log_event
+import time
+
+from fastapi import Request
+
+from .observability import count_event, log_event, record_request, snapshot
 from .realtime import ConnectionManager
 
 app = FastAPI(title="market-service")
@@ -22,6 +26,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 manager = ConnectionManager()
+
+
+@app.middleware("http")
+async def measure(request: Request, call_next):
+    """Mede latência e status de cada requisição HTTP (usado em /metrics)."""
+    t0 = time.perf_counter()
+    response = await call_next(request)
+    route = request.scope.get("route")
+    record_request(request.method, route.path if route else request.url.path, response.status_code,
+                   (time.perf_counter() - t0) * 1000)
+    return response
+
+
+@app.get("/metrics")
+def metrics():
+    """Métricas do serviço em JSON (sem autenticação: só agregados, sem dados de usuários)."""
+    data = snapshot()
+    data["online_users"] = len(manager.online_users())
+    return data
 
 
 class OrderRequest(BaseModel):
@@ -64,9 +87,11 @@ def online(_: User = Depends(current_user)):
 @app.post("/orders", status_code=201)
 async def create_order(body: OrderRequest, user: User = Depends(current_user)):
     # O engine é síncrono (banco); roda em thread para não travar o event loop.
+    count_event("orders_received")
     result = await run_in_threadpool(
         engine.place_order, user.id, user.username, body.symbol, body.side, body.price, body.quantity
     )
+    count_event("trades_executed", len(result["trades"]))
     await _publish(result)
     return {"order": next(o for o in result["orders"] if o["id"] == result["order_id"]), "trades": result["trades"]}
 
