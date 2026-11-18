@@ -50,6 +50,7 @@ services:
       MARKET_URL: http://market-service:8000
       INTERNAL_KEY: ${INTERNAL_KEY:-chave-interna-dev}
       NPC_INTERVAL: "4"
+      NPC_SCALE: ${NPC_SCALE:-2}
     depends_on:
       - auth-service
       - market-service

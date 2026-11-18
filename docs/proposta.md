@@ -67,17 +67,20 @@ Algoritmos baseados em regras, que usam a mesma API pública dos jogadores:
 
 - **MarketMaker** (`npc_maker1`, `npc_maker2`): recota compra e venda em torno do último preço, com spreads de 1 % e 2,5 %, dando liquidez.
 - **Momentum** (`npc_trend`): compra quando o preço sobe mais que 0,4 % entre ciclos e vende quando cai, seguindo a tendência.
+- **MeanReversion** (`npc_valor`): compra quando o preço está 1 % abaixo da média das últimas 12 leituras e vende quando está 1 % acima (estratégia de valor, contra a tendência).
+- **Panic** (`npc_panico`): vende em lote (30 a 80 unidades) depois de uma queda maior que 1,5 % entre ciclos, amplificando movimentos de baixa.
 - **Noise** (`npc_cauteloso`, `npc_ousado`): ordens aleatórias perto do preço; o perfil de risco define a distância (0,5 % e 3 %).
 
+São 7 perfis. A variável `NPC_SCALE` (padrão 2) replica cada perfil (`npc_trend`, `npc_trend_2`, ...), o que dá 14 agentes e permite variar a carga nos testes de escala.
+
 Os NPCs começam com R$ 500.000 e 1.000 unidades de cada ativo, para haver oferta de venda desde o início.
+
+Um mesmo agente pode ter ordens que se cruzam (por exemplo, compra acima da própria venda). O engine não permite negociar consigo mesmo, então essas ordens permanecem abertas. A prevenção de auto-negociação com cancelamento (STP) fica como evolução.
 
 ## 7. Cronograma
 
 | Período | Entrega |
 |---|---|
-| 18/10 | Repositório, banco, auth, market-service com ordens e WebSocket, NPCs |
-| 19/10 | Home Broker (login, ativos, livro, ordens, carteira) |
-| 20/10 | Documentação, diagramas e ensaio da demonstração |
 | 21/10 | **Apresentação e entrega parcial** |
 | 22–31/10 | Eventos econômicos, testes automatizados de concorrência |
 | 01–15/11 | Testes de carga (5, 20, 50 e 100 usuários) e métricas |

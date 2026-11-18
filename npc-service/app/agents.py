@@ -6,11 +6,14 @@ agente de humano, o que também exercita a autenticação e as validações.
 Perfis:
 - MarketMaker: cota compra e venda em torno do último preço (dá liquidez ao livro).
 - Momentum:    segue a tendência; compra quando o preço sobe e vende quando cai.
+- MeanReversion: compra abaixo da média recente e vende acima (contra a tendência).
+- Panic:       vende em lote depois de uma queda forte (amplifica movimentos).
 - Noise:       ordens aleatórias perto do preço; a agressividade define a distância.
 """
 import asyncio
 import logging
 import random
+from collections import deque
 
 import httpx
 
@@ -79,6 +82,7 @@ class Agent:
 
     async def run(self):
         """Laço resiliente: se o mercado cair, tenta de novo no próximo ciclo."""
+        await asyncio.sleep(random.uniform(0, self.interval))  # evita todos os agentes agirem juntos
         while True:
             try:
                 await self.step()
@@ -121,6 +125,49 @@ class Momentum(Agent):
                 await self.order(symbol, "BUY", last * 1.01, qty)    # cruza o spread: executa já
             elif change < -self.threshold:
                 await self.order(symbol, "SELL", last * 0.99, qty)
+
+
+class MeanReversion(Agent):
+    """Valor: compra abaixo da média recente e vende acima (aposta que o preço volta à média).
+
+    Contrapeso do Momentum: enquanto um segue a tendência, este a combate."""
+
+    def __init__(self, *args, window: int = 12, threshold: float = 0.01, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.threshold = threshold
+        self.history: dict[str, deque] = {}
+        self.window = window
+
+    async def step(self):
+        for asset in await self.assets():
+            symbol, last = asset["symbol"], asset["last_price"]
+            prices = self.history.setdefault(symbol, deque(maxlen=self.window))
+            prices.append(last)
+            if len(prices) < self.window:
+                continue  # espera ter histórico suficiente
+            mean = sum(prices) / len(prices)
+            qty = random.randint(5, 20)
+            if last < mean * (1 - self.threshold):
+                await self.order(symbol, "BUY", last * 1.005, qty)
+            elif last > mean * (1 + self.threshold):
+                await self.order(symbol, "SELL", last * 0.995, qty)
+
+
+class Panic(Agent):
+    """Pânico: vende em lote ao ver uma queda forte entre ciclos, empurrando o preço ainda mais para baixo."""
+
+    def __init__(self, *args, drop: float = 0.015, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.drop = drop
+        self.previous: dict[str, float] = {}
+
+    async def step(self):
+        for asset in await self.assets():
+            symbol, last = asset["symbol"], asset["last_price"]
+            before = self.previous.get(symbol, last)
+            self.previous[symbol] = last
+            if (last - before) / before < -self.drop:
+                await self.order(symbol, "SELL", last * 0.97, random.randint(30, 80))
 
 
 class Noise(Agent):
