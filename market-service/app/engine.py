@@ -1,11 +1,16 @@
 """Matching engine, livro de ofertas e carteira.
 
-Consistência: todas as operações que alteram saldo, carteira ou livro passam por
-um único lock global e por uma única transação no PostgreSQL. Isso dá uma ordem
-total às ordens (prioridade temporal = id da ordem) e garante atomicidade: ou a
-ordem e todas as negociações geradas por ela são gravadas, ou nada é.
-Evolução prevista: um lock/serviço por ativo (sharding), desde que o saldo
-passe a ser reservado antes do casamento.
+Consistência: cada ativo tem seu próprio engine (lock por ativo). As ordens de um mesmo
+ativo entram uma a uma (ordem total e prioridade temporal = id da ordem); ativos
+diferentes são processados em paralelo. Cada ordem e as negociações que ela gera são
+gravadas em uma única transação no PostgreSQL (tudo ou nada).
+
+O que protege o dinheiro e os ativos entre ativos diferentes:
+- Reserva: saldo disponível = saldo - soma das compras abertas; ativos disponíveis =
+  posição - soma das vendas abertas. É calculado depois de travar a conta no banco.
+- Ordem de travamento: antes de casar, o engine trava (FOR UPDATE) as contas do
+  investidor e de todas as contrapartes que vão negociar, sempre em ordem crescente
+  de user_id. Sem ciclo de espera, não há deadlock entre ativos.
 """
 import os
 import threading
@@ -19,7 +24,23 @@ NPC_BALANCE = Decimal(os.environ.get("NPC_BALANCE", "500000"))
 NPC_INITIAL_SHARES = int(os.environ.get("NPC_INITIAL_SHARES", "1000"))
 OPEN_STATUSES = ("OPEN", "PARTIAL")
 
-_engine_lock = threading.Lock()
+_symbol_locks: dict[str, threading.Lock] = {}
+_locks_guard = threading.Lock()
+
+
+def _symbol_lock(symbol: str) -> threading.Lock:
+    """Lock do engine do ativo. Os ativos são fixos; símbolo desconhecido é rejeitado
+    (evita crescer o dicionário com símbolos inventados)."""
+    with _locks_guard:
+        if symbol not in _symbol_locks:
+            with transaction() as cur:
+                cur.execute("SELECT symbol FROM market.assets")
+                for row in cur.fetchall():
+                    _symbol_locks.setdefault(row["symbol"], threading.Lock())
+        lock = _symbol_locks.get(symbol)
+    if lock is None:
+        raise MarketError("Ativo inexistente", 404)
+    return lock
 
 
 class MarketError(Exception):
@@ -128,7 +149,9 @@ def get_order(user_id: int, order_id: int):
 def list_trades(user_id: int, limit: int = 50):
     with transaction() as cur:
         cur.execute(
-            "SELECT * FROM market.trades WHERE buyer_id = %s OR seller_id = %s ORDER BY id DESC LIMIT %s",
+            "SELECT t.*, b.username AS buyer_name, s.username AS seller_name FROM market.trades t "
+            "JOIN market.accounts b ON b.user_id = t.buyer_id JOIN market.accounts s ON s.user_id = t.seller_id "
+            "WHERE t.buyer_id = %s OR t.seller_id = %s ORDER BY t.id DESC LIMIT %s",
             (user_id, user_id, limit),
         )
         return clean(cur.fetchall())
@@ -145,7 +168,12 @@ def _require_asset(cur, symbol: str):
 def place_order(user_id: int, username: str, symbol: str, side: str, price: Decimal, quantity: int):
     """Valida, insere no livro e casa a ordem. Retorna o que mudou, para notificação."""
     log_event("ORDER_RECEIVED", user=username, symbol=symbol, side=side, price=price, quantity=quantity)
-    with _engine_lock:
+    try:
+        lock = _symbol_lock(symbol)
+    except MarketError as err:
+        log_event("ORDER_REJECTED", user=username, symbol=symbol, reason=str(err))
+        raise
+    with lock:
         try:
             with transaction() as cur:
                 return _place_order(cur, user_id, username, symbol, side, price, quantity)
@@ -157,9 +185,10 @@ def place_order(user_id: int, username: str, symbol: str, side: str, price: Deci
 def _place_order(cur, user_id, username, symbol, side, price, quantity):
     _require_asset(cur, symbol)
     ensure_account(cur, user_id, username)
-    # Trava a linha da conta: saldo e reservas não mudam durante a validação.
-    cur.execute("SELECT balance FROM market.accounts WHERE user_id = %s FOR UPDATE", (user_id,))
-    balance = cur.fetchone()["balance"]
+    # Trava as contas (investidor e contrapartes) em ordem crescente de user_id: saldo e
+    # reservas não mudam durante a validação e não há deadlock entre ativos diferentes.
+    balances = _lock_accounts(cur, {user_id} | _counterparties(cur, symbol, side, user_id, price, quantity))
+    balance = balances[user_id]
 
     if side == "BUY":
         cur.execute(
@@ -208,6 +237,38 @@ def _place_order(cur, user_id, username, symbol, side, price, quantity):
         "asset": asset,
         "book": _book(cur, symbol),
     })
+
+
+def _counterparties(cur, symbol, side, user_id, price, quantity) -> set:
+    """Donos das ordens do livro que esta ordem vai consumir (mesma regra do _match).
+    O livro do ativo não muda enquanto seguramos o lock do ativo."""
+    if side == "BUY":
+        cur.execute(
+            "SELECT user_id, quantity - filled AS open_qty FROM market.orders WHERE symbol = %s AND side = 'SELL' "
+            "AND status IN ('OPEN', 'PARTIAL') AND user_id <> %s AND price <= %s ORDER BY price ASC, id ASC",
+            (symbol, user_id, price),
+        )
+    else:
+        cur.execute(
+            "SELECT user_id, quantity - filled AS open_qty FROM market.orders WHERE symbol = %s AND side = 'BUY' "
+            "AND status IN ('OPEN', 'PARTIAL') AND user_id <> %s AND price >= %s ORDER BY price DESC, id ASC",
+            (symbol, user_id, price),
+        )
+    owners, remaining = set(), quantity
+    for row in cur.fetchall():
+        if remaining <= 0:
+            break
+        owners.add(row["user_id"])
+        remaining -= row["open_qty"]
+    return owners
+
+
+def _lock_accounts(cur, user_ids) -> dict:
+    balances = {}
+    for uid in sorted(user_ids):
+        cur.execute("SELECT balance FROM market.accounts WHERE user_id = %s FOR UPDATE", (uid,))
+        balances[uid] = cur.fetchone()["balance"]
+    return balances
 
 
 def _match(cur, order_id, user_id, symbol, side, price, quantity):
@@ -273,6 +334,12 @@ def _execute_trade(cur, symbol, buy_id, sell_id, buyer_id, seller_id, price, qty
     )
     trade = cur.fetchone()
     cur.execute(
+        "SELECT (SELECT username FROM market.accounts WHERE user_id = %s) AS buyer_name, "
+        "(SELECT username FROM market.accounts WHERE user_id = %s) AS seller_name",
+        (buyer_id, seller_id),
+    )
+    trade.update(cur.fetchone())
+    cur.execute(
         "UPDATE market.assets SET last_price = %s, volume = volume + %s WHERE symbol = %s",
         (price, qty, symbol),
     )
@@ -283,7 +350,12 @@ def _execute_trade(cur, symbol, buy_id, sell_id, buyer_id, seller_id, price, qty
 
 def cancel_order(user_id: int, order_id: int):
     """Só o dono cancela; ordens de outros usuários aparecem como inexistentes."""
-    with _engine_lock:
+    with transaction() as cur:
+        cur.execute("SELECT symbol FROM market.orders WHERE id = %s AND user_id = %s", (order_id, user_id))
+        found = cur.fetchone()
+    if not found:
+        raise MarketError("Ordem não encontrada", 404)
+    with _symbol_lock(found["symbol"]):  # mesmo lock do ativo: o livro não muda no meio de um casamento
         with transaction() as cur:
             cur.execute(
                 "SELECT * FROM market.orders WHERE id = %s AND user_id = %s FOR UPDATE", (order_id, user_id)

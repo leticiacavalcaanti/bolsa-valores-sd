@@ -7,7 +7,7 @@ from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 from psycopg2.pool import ThreadedConnectionPool
 
-_pool = ThreadedConnectionPool(1, 20, os.environ["DATABASE_URL"])
+_pool = ThreadedConnectionPool(1, 40, os.environ["DATABASE_URL"])
 
 
 @contextmanager
