@@ -1,0 +1,112 @@
+# Sistema de arquivos distribuído: 1 controlador + 5 nós de armazenamento (cada nó = 1 disco em 1 máquina simulada).
+# Subir:   docker compose up -d --build
+# Cliente: docker compose run --rm client put /files/a.bin /docs/a.bin
+# Nó extra (descoberta automática, sem reiniciar nada):  docker compose --profile extra up -d node6
+x-node: &node
+  build: .
+  restart: unless-stopped
+  depends_on: [controller]
+
+x-node-env: &node-env
+  CONTROLLER_URL: http://controller:9000
+  CAPACITY_MB: ${NODE_CAPACITY_MB:-500}          # capacidade simulada de cada disco
+  HEARTBEAT_INTERVAL_S: ${HEARTBEAT_INTERVAL_S:-2}
+  SCRUB_INTERVAL_S: ${SCRUB_INTERVAL_S:-30}      # scrubbing em segundo plano
+  REPLICATION_MBPS: ${REPLICATION_MBPS:-0}       # limite de banda da re-replicação (0 = sem limite)
+
+services:
+  controller:
+    build: .
+    restart: unless-stopped
+    command: uvicorn dfs.controller:app --host 0.0.0.0 --port 9000
+    environment:
+      REPLICATION: ${REPLICATION:-3}                         # N
+      WRITE_QUORUM: ${WRITE_QUORUM:-2}                       # W
+      CHUNK_MB: ${CHUNK_MB:-4}
+      HEARTBEAT_SUSPECT_S: ${HEARTBEAT_SUSPECT_S:-6}
+      HEARTBEAT_DEAD_S: ${HEARTBEAT_DEAD_S:-12}
+      DISK_LIMIT: ${DISK_LIMIT:-0.9}
+      MAX_REREPL: ${MAX_REREPL:-4}
+      ALLOW_UNDER_REPLICATED: ${ALLOW_UNDER_REPLICATED:-true}
+    volumes: [controller-data:/data]
+    ports: ["9000:9000"]
+
+  node1:
+    <<: *node
+    command: uvicorn dfs.node:app --host 0.0.0.0 --port 8000
+    environment:
+      <<: *node-env
+      NODE_ID: node1
+      MACHINE: m1
+    volumes: [node1-data:/data]
+    ports: ["9101:8000"]
+
+  node2:
+    <<: *node
+    command: uvicorn dfs.node:app --host 0.0.0.0 --port 8000
+    environment:
+      <<: *node-env
+      NODE_ID: node2
+      MACHINE: m2
+    volumes: [node2-data:/data]
+    ports: ["9102:8000"]
+
+  node3:
+    <<: *node
+    command: uvicorn dfs.node:app --host 0.0.0.0 --port 8000
+    environment:
+      <<: *node-env
+      NODE_ID: node3
+      MACHINE: m3
+    volumes: [node3-data:/data]
+    ports: ["9103:8000"]
+
+  node4:
+    <<: *node
+    command: uvicorn dfs.node:app --host 0.0.0.0 --port 8000
+    environment:
+      <<: *node-env
+      NODE_ID: node4
+      MACHINE: m4
+    volumes: [node4-data:/data]
+    ports: ["9104:8000"]
+
+  node5:
+    <<: *node
+    command: uvicorn dfs.node:app --host 0.0.0.0 --port 8000
+    environment:
+      <<: *node-env
+      NODE_ID: node5
+      MACHINE: m5
+    volumes: [node5-data:/data]
+    ports: ["9105:8000"]
+
+  node6:
+    <<: *node
+    profiles: [extra]
+    command: uvicorn dfs.node:app --host 0.0.0.0 --port 8000
+    environment:
+      <<: *node-env
+      NODE_ID: node6
+      MACHINE: m6
+    volumes: [node6-data:/data]
+    ports: ["9106:8000"]
+
+  client:
+    build: .
+    profiles: [tools]
+    entrypoint: python -m dfs.client
+    environment:
+      CONTROLLER_URL: http://controller:9000
+      ENCRYPTION: ${ENCRYPTION:-off}
+    volumes: ["./files:/files", "./tests:/tests"]
+    depends_on: [controller]
+
+volumes:
+  controller-data:
+  node1-data:
+  node2-data:
+  node3-data:
+  node4-data:
+  node5-data:
+  node6-data:
