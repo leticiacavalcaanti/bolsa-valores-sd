@@ -1,0 +1,98 @@
+[
+ {
+  "id": "F01",
+  "objetivo": "Cadastro e login geram JWT",
+  "esperado": "token não vazio",
+  "obtido": "token ok",
+  "status": "passou",
+  "hora": "2026-11-18 11:16:44"
+ },
+ {
+  "id": "F02",
+  "objetivo": "Rota protegida sem token",
+  "esperado": "401/403",
+  "obtido": "403",
+  "status": "passou",
+  "hora": "2026-11-18 11:16:44"
+ },
+ {
+  "id": "F03",
+  "objetivo": "Token inválido",
+  "esperado": "401/403",
+  "obtido": "401",
+  "status": "passou",
+  "hora": "2026-11-18 11:16:44"
+ },
+ {
+  "id": "F04",
+  "objetivo": "Listar ativos",
+  "esperado": "5 ativos",
+  "obtido": "5",
+  "status": "passou",
+  "hora": "2026-11-18 11:16:44"
+ },
+ {
+  "id": "F05",
+  "objetivo": "Carteira inicial",
+  "esperado": "saldo 100000",
+  "obtido": "100000.0",
+  "status": "passou",
+  "hora": "2026-11-18 11:16:44"
+ },
+ {
+  "id": "F06",
+  "objetivo": "Venda sem ativo",
+  "esperado": "422",
+  "obtido": "422",
+  "status": "passou",
+  "hora": "2026-11-18 11:16:44"
+ },
+ {
+  "id": "F07",
+  "objetivo": "Compra acima do saldo",
+  "esperado": "422",
+  "obtido": "422",
+  "status": "passou",
+  "hora": "2026-11-18 11:16:44"
+ },
+ {
+  "id": "F08",
+  "objetivo": "Parâmetros inválidos (quantidade negativa)",
+  "esperado": "422",
+  "obtido": "422",
+  "status": "passou",
+  "hora": "2026-11-18 11:16:44"
+ },
+ {
+  "id": "F09",
+  "objetivo": "Status de ordem e autorização (dono vs outro)",
+  "esperado": "404 para outro, cancelamento só do dono",
+  "obtido": "criar=201 status=200 outro_lê=404 outro_cancela=404 dono_cancela=200",
+  "status": "passou",
+  "hora": "2026-11-18 11:16:45"
+ },
+ {
+  "id": "F10",
+  "objetivo": "Ordem fora do mercado fica OPEN no livro",
+  "esperado": "OPEN",
+  "obtido": "OPEN",
+  "status": "passou",
+  "hora": "2026-11-18 11:16:45"
+ },
+ {
+  "id": "F11",
+  "objetivo": "Cruzamento executa ao preço do livro",
+  "esperado": "FILLED/PARTIAL",
+  "obtido": "status=FILLED executada=1",
+  "status": "passou",
+  "hora": "2026-11-18 11:16:45"
+ },
+ {
+  "id": "F12",
+  "objetivo": "Concorrência: 20 compras simultâneas (R$20k cada)",
+  "esperado": "só as que cabem no saldo",
+  "obtido": "esperado=4 aceitas=4/20 disponível=19999.94",
+  "status": "passou",
+  "hora": "2026-11-18 11:16:46"
+ }
+]
