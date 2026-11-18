@@ -145,12 +145,17 @@ export default function Broker({ session, onSignOut }) {
               <ul className="tape">
                 {trades.slice(0, 8).map((t) => {
                   const bought = t.buyer_id === myId;
+                  const who = (id, name) => (id === myId ? "você" : name);
                   return (
                     <li key={t.id}>
                       <time className="num">{time(t.executed_at)}</time>
                       <span className="text">
                         <span className={bought ? "up" : "down"}>{bought ? "Compra" : "Venda"}</span>{" "}
                         {t.symbol}: {qty(t.quantity)} @ {price(t.price)}
+                        <br />
+                        <span className="muted">
+                          comprador {who(t.buyer_id, t.buyer_name)} · vendedor {who(t.seller_id, t.seller_name)}
+                        </span>
                       </span>
                       <span className="num muted">{price(Number(t.price) * Number(t.quantity))}</span>
                     </li>
